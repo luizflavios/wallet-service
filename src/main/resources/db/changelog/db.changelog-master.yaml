@@ -1,0 +1,106 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-initial-creation
+      author: Luiz Flávio de Souza Sales Filho
+      changes:
+        - createTable:
+            tableName: wallets
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: current_balance
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+
+        - addUniqueConstraint:
+            columnNames: user_id
+            tableName: wallets
+            constraintName: uk_wallet_user_id
+
+        - createIndex:
+            indexName: idx_wallet_user_id
+            tableName: wallets
+            columns:
+              - column:
+                  name: user_id
+
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: wallet_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: transaction_type
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+
+        - addForeignKeyConstraint:
+            baseTableName: transactions
+            baseColumnNames: wallet_id
+            referencedTableName: wallets
+            referencedColumnNames: id
+            constraintName: fk_transaction_wallet
+
+        - createIndex:
+            indexName: idx_transaction_wallet_id
+            tableName: transactions
+            columns:
+              - column:
+                  name: wallet_id
+
+        - createIndex:
+            indexName: idx_transaction_created_at
+            tableName: transactions
+            columns:
+              - column:
+                  name: created_at
