@@ -10,7 +10,6 @@ import com.recargapay.wallet_service.domain.wallet.model.BalanceResponseDTO;
 import com.recargapay.wallet_service.domain.wallet.model.CreateWalletRequestDTO;
 import com.recargapay.wallet_service.domain.wallet.model.CreateWalletResponseDTO;
 import com.recargapay.wallet_service.infrastructure.persistence.wallet.entity.WalletEntity;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,7 @@ public class WalletApplicationService {
     }
 
     @Transactional
-    public void transfer(@Valid TransferRequestDTO transferRequestDTO) {
+    public void transfer(TransferRequestDTO transferRequestDTO) {
         checkLegalityOfTheTransfer(transferRequestDTO);
 
         WalletEntity sender;
@@ -97,7 +96,7 @@ public class WalletApplicationService {
     private void checkLegalityOfTheTransfer(TransferRequestDTO transferRequestDTO) {
         if (transferRequestDTO.senderId()
                 .equals(transferRequestDTO.recipientId())) {
-            
+
             throw new IllegalTransferException();
         }
     }
